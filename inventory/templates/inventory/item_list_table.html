@@ -1,0 +1,28 @@
+<!-- inventory/item_list_table.html -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Kod EAN</th>
+            <th>Cena</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.itm_name }}</td>
+                <td>{{ item.itm_ean }}</td>
+                <td>{{ item.itm_price | default_if_none:"0" }} PLN</td>
+                <td>
+                    <a href="{% url 'edit_item' item.itm_id %}" class="btn btn-sm btn-warning">Edytuj</a>
+                    <a href="{% url 'delete_item' item.itm_id %}" class="btn btn-sm btn-danger" onclick="return confirm('Czy na pewno chcesz usunąć ten produkt?');">Usuń</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">Brak dostępnych produktów.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

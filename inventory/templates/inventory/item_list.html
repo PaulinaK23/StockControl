@@ -1,0 +1,42 @@
+{% extends "inventory/base.html" %}
+
+{% block title %}Lista Produktów{% endblock %}
+
+{% block content %}
+    <h1 class="my-4">Lista Produktów</h1>
+
+    <!-- Formularz filtrowania -->
+    <form id="filter-form" class="mb-4">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nazwa</th>
+                    <th>Kod EAN</th>
+                    <th>Cena</th>
+                    <th>Akcje</th>
+                </tr>
+                <tr>
+                    <th>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Filtruj po nazwie">
+                    </th>
+                    <th>
+                        <input type="text" name="ean" id="ean" class="form-control" placeholder="Filtruj po kodzie EAN">
+                    </th>
+                    <th>
+                        <input type="number" name="min_price" id="min_price" class="form-control" placeholder="Cena od">
+                        <input type="number" name="max_price" id="max_price" class="form-control mt-1" placeholder="Cena do">
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </form>
+
+    <!-- Kontener na wyniki -->
+    <div id="item-list">
+        {% include "inventory/item_list_table.html" %}
+    </div>
+
+    <a href="{% url 'add_item' %}" class="btn btn-success">Dodaj Nowy Produkt</a>
+
+{% endblock %}
