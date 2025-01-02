@@ -1,0 +1,251 @@
+.table {
+    width: 100%;
+    margin: 20px 0;
+    font-size: 14px;
+    background-color: white;
+    border-collapse: collapse;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    table-layout: auto; /* Dopasowanie szerokości kolumn */
+}
+
+
+
+.table th {
+    background-color: #e2e2e2;
+    color: #2C3E50;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 2px solid #E0E0E0;
+}
+
+.table tbody tr:nth-child(odd) {
+    background-color: #F9F9F9;
+}
+
+.table tbody tr:hover {
+    background-color: #dbebe8;
+}
+
+.table td:first-child {
+    font-weight: bold;
+    color: #00897B; /* Zielony kolor */
+}
+.btn-edit {
+    background-color: #FFF3CD;
+    color: #856404;
+    border: 1px solid #FFE8A1;
+    border-radius: 4px;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-edit:hover {
+    background-color: #FFE8A1;
+    color: #6C5C02;
+    border-color: #FFD966;
+}
+
+.btn-delete {
+    background-color: #F8D7DA;
+    color: #842029;
+    border: 1px solid #F5C2C7;
+    border-radius: 4px;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+    background-color: #F1B0B7;
+    color: #6D1C23;
+    border-color: #E8828B;
+}
+/* Przyciski z obrysem zielonym */
+.btn-outline-custom {
+    color: #00897B; /* Zielony tekst */
+    border: 2px solid #00897B; /* Zielony obrys */
+    background-color: transparent; /* Przezroczyste tło */
+    border-radius: 5px; /* Zaokrąglone rogi */
+    font-size: 0.9rem; /* Tekst nieco większy */
+    padding: 0.4rem 0.75rem; /* Wygodne wewnętrzne odstępy */
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; /* Odstęp między ikoną a tekstem */
+    transition: all 0.3s ease; /* Płynne przejście */
+    text-decoration: none; /* Usunięcie podkreślenia dla linków */
+}
+
+.btn-outline-custom {
+    display: inline-flex; /* Flexbox dla zawartości */
+    justify-content: center; /* Wyśrodkowanie poziome */
+    align-items: center; /* Wyśrodkowanie pionowe */
+    gap: 8px; /* Odstęp między ikoną a tekstem */
+    font-size: 0.9rem; /* Rozmiar tekstu */
+    color: #00897B; /* Kolor tekstu */
+    border: 2px solid #00897B; /* Obrys */
+    background-color: transparent; /* Przezroczyste tło */
+    border-radius: 5px;
+    padding: 0.4rem 0.75rem; /* Wewnętrzny padding */
+    text-decoration: none; /* Usuń podkreślenie */
+    transition: all 0.3s ease;
+}
+
+.btn-outline-custom i {
+    font-size: 0.9rem; /* Mniejsza ikona */
+}
+
+.btn-outline-custom:hover {
+    background-color: #00897B; /* Zielone tło przy najechaniu */
+    color: #fff; /* Biały tekst przy najechaniu */
+}
+
+.btn-outline-custom:focus,
+.btn-outline-custom:active {
+    background-color: #00695C; /* Ciemniejsze zielone tło przy aktywacji */
+    color: #fff; /* Biały tekst */
+    border-color: #00695C; /* Dopasowany ciemniejszy obrys */
+    box-shadow: 0 0 5px rgba(0, 137, 123, 0.5); /* Subtelny cień */
+}
+
+/* Dostosowanie szerokości kolumn dla tabeli ITEMS *//*
+
+#items-table th:nth-child(1),
+#items-table td:nth-child(1) {
+    width: 20%; */
+/* Kolumna dla nazwy *//*
+
+}
+
+#items-table th:nth-child(2),
+#items-table td:nth-child(2) {
+    width: 15%; */
+/* Kolumna dla kodu EAN *//*
+
+}
+
+#items-table th:nth-child(3),
+#items-table td:nth-child(3) {
+    width: 10%; */
+/* Kolumna dla ceny *//*
+
+}
+
+#items-table th:nth-child(4),
+#items-table td:nth-child(4) {
+    width: 15%; */
+/* Kolumna dla kategorii *//*
+
+}
+
+#items-table th:nth-child(5),
+#items-table td:nth-child(5) {
+    width: 15%; */
+/* Kolumna dla dostawcy *//*
+
+}
+
+#items-table th:nth-child(6),
+#items-table td:nth-child(6) {
+    width: 5%; */
+/* Kolumna dla ilości minimalnej *//*
+
+}
+
+#items-table th:nth-child(7),
+#items-table td:nth-child(7) {
+    width: 5%; */
+/* Kolumna dla jednostki miary *//*
+
+}
+
+#items-table th:nth-child(8),
+#items-table td:nth-child(8) {
+    width: 8%; */
+/* Kolumna dla aktywności *//*
+
+}
+
+*/
+
+/* Wyśrodkowanie tekstu w nagłówkach i komórkach */
+.table th,
+.table td {
+    text-align: center; /* Wyśrodkowanie poziome */
+    vertical-align: middle; /* Wyśrodkowanie pionowe */
+}
+
+
+
+
+
+@media (max-width: 768px) {
+    .table {
+        display: block;
+        overflow-x: auto;
+        border: none;
+    }
+
+    .table thead {
+        display: none; /* Ukrycie nagłówków */
+    }
+
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Każdy wiersz będzie wyglądał jak karta */
+    .table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+    }
+
+    /* Etykiety i wartości w każdej komórce */
+    .table td {
+        display: flex;
+        justify-content: space-between; /* Układ: Etykieta -> Wartość */
+        align-items: center;
+        padding: 8px 10px;
+        font-size: 13px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .table td:last-child {
+        border-bottom: none; /* Usuń dolną linię z ostatniej komórki */
+    }
+
+    /* Dodanie etykiet z atrybutu data-label */
+    .table td::before {
+        content: attr(data-label); /* Wstawienie etykiety */
+        font-weight: bold;
+        color: #333;
+        text-transform: uppercase;
+        text-align: left;
+        padding-right: 10px;
+    }
+    /* Wartości w komórkach */
+    .table td span,
+    .table td a {
+        flex: 1; /* Wartość zajmuje resztę przestrzeni */
+        text-align: right;
+    }
+
+    /* Przyciski akcji */
+    .table td a.btn {
+        margin-left: 5px;
+        padding: 4px 6px;
+        font-size: 12px;
+    }
+        /* Dopasowanie marginesów */
+    .btn-outline-custom,
+    .btn-primary-custom {
+        width: 100%; /* Rozciągnięcie przycisków */
+    }
+
+
+}

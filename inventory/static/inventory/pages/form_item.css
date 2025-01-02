@@ -1,0 +1,134 @@
+/* Tło formularza */
+form.bg-white {
+    background-color: #fff;
+    border: 1px solid #E0E0E0; /* Delikatna ramka */
+    border-radius: 8px; /* Zaokrąglone rogi */
+}
+
+/* Nagłówek */
+.page-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Etykiety formularzy */
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+}
+/* Styl hover dla pól */
+.form-control:focus, .form-select:focus {
+    border-color: #00897B; /* Zielony obrys */
+    box-shadow: 0 0 5px rgba(0, 137, 123, 0.5);
+    outline: none;
+}
+
+/* Przycisk Dodaj Produkt */
+.btn-primary-custom {
+    background-color: #00897B;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background-color: #00695C;
+}
+/* Przycisk Powrót */
+.btn-outline-secondary {
+    border: 2px solid #E0E0E0;
+    color: #333;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+/* Styl dla aktywnego checkboxa */
+.form-check .form-check-input:checked {
+    background-color: #00897B; /* Zielone wypełnienie */
+    border-color: #00897B; /* Zielony obrys */
+}
+
+/* Styl hover dla checkboxa */
+.form-check .form-check-input:hover {
+    border-color: #00695C; /* Ciemniejszy zielony na hover */
+}
+
+/* Styl focus dla checkboxa */
+.form-check .form-check-input:focus {
+    box-shadow: 0 0 5px rgba(0, 137, 123, 0.5); /* Zielony cień */
+    border-color: #00897B;
+}
+/* Styl dla domyślnych checkboxów */
+.form-check-input {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid #E0E0E0; /* Szary obrys */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Kiedy checkbox jest zaznaczony */
+.form-check-input:checked {
+    background-color: #00897B; /* Zielone tło */
+    border-color: #00897B; /* Zielony obrys */
+}
+
+/* Kiedy checkbox jest aktywny (focus) */
+.form-check-input:focus {
+    border-color: #004D40; /* Ciemniejszy zielony */
+    box-shadow: 0 0 5px rgba(0, 77, 64, 0.5); /* Delikatny zielony cień */
+}
+/* Responsywne poprawki */
+@media (max-width: 768px) {
+    /* Formularz */
+    form.bg-white {
+        padding: 1rem; /* Dopasowanie paddingu */
+        border-radius: 5px; /* Mniejsze zaokrąglenie */
+    }
+
+    /* Etykiety */
+    .form-label {
+        font-size: 0.85rem; /* Zmniejszone etykiety */
+        margin-bottom: 0.5rem; /* Większy odstęp między etykietą a polem */
+    }
+
+    /* Pola formularza */
+    .form-control, .form-select {
+        font-size: 0.85rem; /* Zmniejszony tekst w polach */
+        padding: 0.4rem 0.75rem; /* Dopasowane odstępy */
+    }
+
+    /* Checkbox */
+    .form-check-input {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Przyciski */
+    .btn-primary-custom, .btn-outline-secondary {
+        font-size: 0.85rem; /* Mniejszy tekst */
+        padding: 0.4rem 0.8rem; /* Dopasowane odstępy */
+        width: 100%; /* Przyciski na pełną szerokość */
+    }
+
+    /* Dodanie odstępu między przyciskami */
+    .btn-primary-custom:not(:last-child), .btn-outline-secondary:not(:last-child) {
+        margin-bottom: 0.75rem;
+    }
+
+    /* Marginesy w polach formularza */
+    .form-group {
+        margin-bottom: 1rem; /* Większe odstępy między grupami pól */
+    }
+
+    /* Wyśrodkowanie formularza */
+    form {
+        max-width: 100%; /* Formularz zajmuje pełną szerokość */
+    }
+}

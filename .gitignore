@@ -1,0 +1,50 @@
+# Wyklucz foldery systemowe Windows
+AppData/
+Cookies/
+Dane\ aplikacji/
+Menu\ Start/
+Moje\ dokumenty/
+NetHood/
+PrintHood/
+Recent/
+SendTo/
+Szablony/
+Ustawienia\ lokalne/
+3D Objects/
+Contacts/
+Desktop/
+Documents/
+Downloads/
+Favorites/
+Links/
+Music/
+Pictures/
+Saved\ Games/
+Searches/
+Videos/
+
+# Wyklucz pliki systemowe
+*.ini
+*.log
+*.DAT
+*.blf
+*.regtrans-ms
+
+# Wyklucz wirtualne œrodowisko Python
+.venv/
+env/
+__pycache__/
+
+# Wyklucz konfiguracje IDE
+.vscode/
+.idea/
+
+# Wyklucz pliki i foldery niezwi¹zane z projektem
+Untitled.ipynb
+RozpoznawanieObrazow.ipynb
+ProjektyWszystkie/
+PycharmProjects/
+bazy/
+java/
+models/
+source/

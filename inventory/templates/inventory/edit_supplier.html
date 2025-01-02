@@ -1,0 +1,41 @@
+{% extends "inventory/base.html" %}
+
+{% block title %}Edytuj Dostawcę{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="page-title mb-4 text-center">Edytuj Dostawcę</h1>
+    <form method="post" class="bg-white shadow-sm p-4 rounded">
+        {% csrf_token %}
+
+        <div class="row g-3">
+            {% for field in form %}
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% for error in field.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Przyciski akcji -->
+        <div class="d-flex flex-column flex-md-row justify-content-md-between gap-3 mt-4">
+            <a href="{% url 'supplier_list' %}" class="btn btn-outline-secondary w-100 w-md-auto">
+                <i class="bi bi-arrow-left-circle"></i> Powrót do listy dostawców
+            </a>
+            <button type="submit" class="btn btn-primary-custom w-100 w-md-auto">
+                <i class="bi bi-save"></i> Zapisz zmiany
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

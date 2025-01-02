@@ -1,0 +1,160 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <!-- Tytuł -->
+    <div class="col-12 col-md-6 mb-2 mb-md-0">
+        <h1 class="page-title">Produkty</h1>
+    </div>
+
+    <!-- Akcje -->
+    <div class="col-12 col-md-6 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-end gap-2">
+        <!-- Pokazuje -->
+        <div class="d-flex align-items-center">
+            <form method="get" id="showing-form">
+                <label for="showing-select" class="me-2">Pokazuje:</label>
+                <select id="showing-select" name="showing" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="10" {% if items_per_page == 10 %}selected{% endif %}>10</option>
+                    <option value="20" {% if items_per_page == 20 %}selected{% endif %}>20</option>
+                    <option value="50" {% if items_per_page == 50 %}selected{% endif %}>50</option>
+                </select>
+
+                <input type="hidden" name="name" value="{{ name_query }}">
+                <input type="hidden" name="ean" value="{{ ean_query }}">
+                <input type="hidden" name="price" value="{{ price_query }}">
+                <input type="hidden" name="category" value="{{ category_query }}">
+                <input type="hidden" name="supplier" value="{{ supplier_query }}">
+                <input type="hidden" name="minquantity" value="{{ minquantity_query }}">
+                <input type="hidden" name="unit" value="{{ unit_query }}">
+                <input type="hidden" name="isactive" value="{{ isactive_query }}">
+                <input type="hidden" name="page" value="1">
+            </form>
+        </div>
+
+        <!-- Eksport -->
+        <a href="#" id="export-button" class="btn btn-outline-custom">
+            <i class="bi bi-file-earmark-excel"></i> Eksportuj
+        </a>
+
+        <!-- Dodaj Produkt -->
+        <a href="{% url 'add_item' %}" class="btn btn-primary-custom">
+            <i class="bi bi-plus-circle"></i> Dodaj Produkt
+        </a>
+    </div>
+</div>
+
+<!-- Tabela produktów -->
+<div id="items-table-container">
+    <table class="table" id="items-table">
+        <thead>
+            <tr>
+                <th>
+                    NAZWA
+                    <div class="position-relative">
+                        <input
+                            id="name-filter"
+                            type="text"
+                            class="form-control form-control-sm"
+                            value="{{ request.GET.name|default_if_none:'' }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    KOD EAN
+                    <div class="position-relative">
+                        <input
+                            id="ean-filter"
+                            type="text"
+                            class="form-control form-control-sm"
+                            value="{{ request.GET.ean|default_if_none:'' }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    CENA
+                    <div class="position-relative">
+                        <input
+                            id="price-filter"
+                            type="text"
+                            class="form-control form-control-sm"
+                            value="{{ request.GET.price|default_if_none:'' }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    KATEGORIA
+                    <div class="position-relative">
+                        <input
+                            id="category-filter"
+                            type="text"
+                            class="form-control form-control-sm"
+                            value="{{ request.GET.category|default_if_none:'' }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    DOSTAWCA
+                    <div class="position-relative">
+                        <input
+                            id="supplier-filter"
+                            type="text"
+                            class="form-control form-control-sm"
+                            value="{{ request.GET.supplier|default_if_none:'' }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    ILOŚĆ MINIMALNA
+                    <div class="position-relative">
+                        <input
+                            id="minquantity-filter"
+                            type="text"
+                            class="form-control form-control-sm"
+                            value="{{ request.GET.minquantity|default_if_none:'' }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    JM
+                    <div class="position-relative">
+                        <input
+                            id="unit-filter"
+                            type="text"
+                            class="form-control form-control-sm"
+                            value="{{ request.GET.unit|default_if_none:'' }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    AKTYWNY
+                    <div class="position-relative">
+                        <select
+                            id="isactive-filter"
+                            name="isactive"
+                            class="form-select form-select-sm"
+                            onchange="this.form.submit()"> <!-- Wysyła formularz przy zmianie wartości -->
+                            <option value="" {% if isactive_query == "" %}selected{% endif %}>Wszystko</option>
+                            <option value="1" {% if isactive_query == "1" %}selected{% endif %}>Tak</option>
+                            <option value="0" {% if isactive_query == "0" %}selected{% endif %}>Nie</option>
+                        </select>
+                    </div>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="item-list-body">
+            {% include "inventory/item_list_table.html" %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Paginacja -->
+<div id="pagination-container" class="d-flex justify-content-center mt-3">
+    {% include "inventory/item_list_pagination.html" %}
+</div>
+
+
+<script src="{% static 'inventory/filter_items.js' %}"></script>
+
+{% endblock %}

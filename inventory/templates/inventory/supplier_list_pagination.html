@@ -1,0 +1,35 @@
+<nav aria-label="Paginacja">
+    <ul class="pagination justify-content-center">
+        {% if suppliers.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ suppliers.previous_page_number }}&showing={{ showing }}&name={{ name_query }}&nip={{ nip_query }}&email={{ email_query }}&phone={{ phone_query }}&address={{ address_query }}">
+                    Poprzednia
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Poprzednia</a>
+            </li>
+        {% endif %}
+
+        {% for page_num in suppliers.paginator.page_range %}
+            <li class="page-item {% if page_num == suppliers.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ page_num }}&showing={{ showing }}&name={{ name_query }}&nip={{ nip_query }}&email={{ email_query }}&phone={{ phone_query }}&address={{ address_query }}">
+                    {{ page_num }}
+                </a>
+            </li>
+        {% endfor %}
+
+        {% if suppliers.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ suppliers.next_page_number }}&showing={{ showing }}&name={{ name_query }}&nip={{ nip_query }}&email={{ email_query }}&phone={{ phone_query }}&address={{ address_query }}">
+                    Następna
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Następna</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>

@@ -1,0 +1,36 @@
+
+<nav aria-label="Paginacja">
+    <ul class="pagination justify-content-center">
+        {% if stocks.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ stocks.previous_page_number }}&showing={{ showing }}&product={{ product_query }}&warehouse={{ warehouse_query }}&quantity={{ quantity_query }}">
+                    Poprzednia
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Poprzednia</a>
+            </li>
+        {% endif %}
+
+        {% for page_num in stocks.paginator.page_range %}
+            <li class="page-item {% if page_num == stocks.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ page_num }}&showing={{ showing }}&product={{ product_query }}&warehouse={{ warehouse_query }}&quantity={{ quantity_query }}">
+                    {{ page_num }}
+                </a>
+            </li>
+        {% endfor %}
+
+        {% if stocks.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ stocks.next_page_number }}&showing={{ showing }}&product={{ product_query }}&warehouse={{ warehouse_query }}&quantity={{ quantity_query }}">
+                    Następna
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Następna</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>

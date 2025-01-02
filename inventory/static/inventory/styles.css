@@ -1,0 +1,37 @@
+/* Global Styles */
+body {
+    background-color: #F5F6F8; /* Jasnoszare tło */
+    color: #333333; /* Ciemny tekst */
+    font-family: Arial, sans-serif;
+}
+
+
+.pagination .page-link {
+    color: #00897B;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #00897B;
+    border-color: #00897B;
+    color: white;
+}
+
+#showing-select {
+    width: auto;
+    display: inline-block;
+}
+/* Responsywność dla sekcji "Pokazuje" */
+@media (max-width: 768px) {
+    #showing-form {
+        width: 100%; /* Formularz zajmuje pełną szerokość */
+    }
+
+    #showing-select {
+        width: 100%; /* Rozciąganie selecta na pełną szerokość */
+    }
+
+    #showing-form label {
+        margin-bottom: 0.5rem; /* Dystans między etykietą a polem */
+    }
+}

@@ -1,0 +1,19 @@
+{% for stock in stocks %}
+<tr>
+    <td data-label="Produkt">{{ stock.stk_itmid.itm_name }}</td>
+    <td data-label="Magazyn">{{ stock.stk_whsid.whs_name }}</td>
+    <td data-label="Ilość">{{ stock.stk_qty }}</td>
+    <td>
+        <a href="{% url 'edit_stock' stock.stk_id %}" class="btn btn-edit">
+            <i class="bi bi-pencil"></i>
+        </a>
+        <a href="{% url 'delete_stock' stock.stk_id %}" class="btn btn-delete" onclick="return confirm('Czy na pewno chcesz usunąć ten stan magazynowy?')">
+            <i class="bi bi-trash"></i>
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="4" class="text-center">Brak wyników dla podanych kryteriów.</td>
+</tr>
+{% endfor %}

@@ -1,0 +1,108 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <!-- Tytuł -->
+    <div class="col-12 col-md-6 mb-2 mb-md-0">
+        <h1 class="page-title">Dostawcy</h1>
+    </div>
+
+    <!-- Akcje -->
+    <div class="col-12 col-md-6 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-end gap-2">
+        <!-- Pokazuje -->
+        <div class="d-flex align-items-center">
+            <form method="get" id="showing-form">
+                <label for="showing-select" class="me-2">Pokazuje:</label>
+                <select id="showing-select" name="showing" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="10" {% if showing == 10 %}selected{% endif %}>10</option>
+                    <option value="20" {% if showing == 20 %}selected{% endif %}>20</option>
+                    <option value="50" {% if showing == 50 %}selected{% endif %}>50</option>
+                </select>
+
+                <input type="hidden" name="name" value="{{ name_query }}">
+                <input type="hidden" name="nip" value="{{ nip_query }}">
+                <input type="hidden" name="email" value="{{ email_query }}">
+                <input type="hidden" name="phone" value="{{ phone_query }}">
+                <input type="hidden" name="address" value="{{ address_query }}">
+                <input type="hidden" name="page" value="1">
+            </form>
+        </div>
+
+        <!-- Eksport -->
+        <a id="export-button" href="{% url 'export_suppliers_to_excel' %}" class="btn btn-outline-custom">
+            <i class="bi bi-file-earmark-excel"></i> Eksportuj
+        </a>
+
+
+        <!-- Dodaj Dostawcę -->
+        <a href="{% url 'add_supplier' %}" class="btn btn-primary-custom">
+            <i class="bi bi-plus-circle"></i> Dodaj Dostawcę
+        </a>
+    </div>
+</div>
+
+
+
+<!-- Tabela dostawców -->
+<div id="suppliers-table-container">
+    <table class="table" id="suppliers-table">
+        <thead>
+            <tr>
+                <th>
+                    NAZWA
+                    <div class="position-relative">
+                        <input id="name-filter" type="text" class="form-control form-control-sm">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    NIP
+                    <div class="position-relative">
+                        <input id="nip-filter" type="text" class="form-control form-control-sm">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    EMAIL
+                    <div class="position-relative">
+                        <input id="email-filter" type="text" class="form-control form-control-sm">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    TELEFON
+                    <div class="position-relative">
+                        <input id="phone-filter" type="text" class="form-control form-control-sm">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    ADRES
+                    <div class="position-relative">
+                        <input id="address-filter" type="text" class="form-control form-control-sm">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+
+
+        <tbody id="supplier-list-body">
+            {% include "inventory/supplier_list_table.html" %}
+        </tbody>
+    </table>
+</div>
+
+
+
+<!-- Paginacja -->
+<div id="pagination-container" class="d-flex justify-content-center mt-3">
+    {% include "inventory/supplier_list_pagination.html" %}
+</div>
+
+
+<script src="{% static 'inventory/filter_suppliers.js' %}"></script>
+
+{% endblock %}

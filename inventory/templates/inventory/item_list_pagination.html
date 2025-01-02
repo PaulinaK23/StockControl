@@ -1,0 +1,36 @@
+
+<nav aria-label="Paginacja">
+    <ul class="pagination justify-content-center">
+        {% if items.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ items.previous_page_number }}&showing={{ items_per_page }}&name={{ name_query }}&ean={{ ean_query }}&price={{ price_query }}&category={{ category_query }}&supplier={{ supplier_query }}&minquantity={{ minquantity_query }}&unit={{ unit_query }}&isactive={{ isactive_query }}">
+                    Poprzednia
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Poprzednia</a>
+            </li>
+        {% endif %}
+
+        {% for page_num in items.paginator.page_range %}
+            <li class="page-item {% if page_num == items.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ page_num }}&showing={{ items_per_page }}&name={{ name_query }}&ean={{ ean_query }}&price={{ price_query }}&category={{ category_query }}&supplier={{ supplier_query }}&minquantity={{ minquantity_query }}&unit={{ unit_query }}&isactive={{ isactive_query }}">
+                    {{ page_num }}
+                </a>
+            </li>
+        {% endfor %}
+
+        {% if items.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ items.next_page_number }}&showing={{ items_per_page }}&name={{ name_query }}&ean={{ ean_query }}&price={{ price_query }}&category={{ category_query }}&supplier={{ supplier_query }}&minquantity={{ minquantity_query }}&unit={{ unit_query }}&isactive={{ isactive_query }}">
+                    Następna
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Następna</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>

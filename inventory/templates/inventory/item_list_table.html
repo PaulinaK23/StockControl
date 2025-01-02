@@ -1,0 +1,24 @@
+{% for item in items %}
+<tr>
+    <td data-label="Nazwa">{{ item.itm_name|default_if_none:'' }}</td>
+    <td data-label="Kod EAN">{{ item.itm_ean|default_if_none:'' }}</td>
+    <td data-label="Cena">{{ item.itm_price|default_if_none:'' }}</td>
+    <td data-label="Kategoria">{{ item.itm_catid.cat_name|default_if_none:'-' }}</td>
+    <td data-label="Dostawca">{{ item.itm_supid.sup_name|default_if_none:'-' }}</td>
+    <td data-label="Ilość Minimalna">{{ item.itm_minquantity|default_if_none:0 }}</td>
+    <td data-label="JM">{{ item.itm_uniid.uni_name|default_if_none:'-' }}</td>
+    <td data-label="Aktywny">{{ item.itm_isactive|yesno:"Tak,Nie" }}</td>
+    <td>
+        <a href="{% url 'edit_item' item.itm_id %}" class="btn btn-edit">
+            <i class="bi bi-pencil"></i>
+        </a>
+        <a href="{% url 'delete_item' item.itm_id %}" class="btn btn-delete" onclick="return confirm('Czy na pewno chcesz usunąć ten produkt?')">
+            <i class="bi bi-trash"></i>
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="4" class="text-center">Brak wyników dla podanych kryteriów.</td>
+</tr>
+{% endfor %}

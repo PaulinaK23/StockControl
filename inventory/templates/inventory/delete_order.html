@@ -1,0 +1,23 @@
+{% extends "inventory/base.html" %}
+{% block title %}Usuń Zamówienie{% endblock %}
+
+{% block content %}
+<h1 class="page-title mb-4 text-danger">Usuń Zamówienie</h1>
+
+<div class="alert alert-warning">
+    Czy na pewno chcesz usunąć zamówienie <strong>#{{ order.ord_number }}</strong>?
+    Tej operacji nie można cofnąć.
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'order_list' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Anuluj
+        </a>
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Usuń Zamówienie
+        </button>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'inventory/base.html' %}
+
+{% block title %}Dodaj Dostawcę{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="page-title mb-4 text-center">Dodaj Dostawcę</h1>
+
+    <form method="post" action="" class="bg-white shadow-sm p-4 rounded">
+        {% csrf_token %}
+
+        <div class="row g-3">
+            <!-- Nazwa dostawcy -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nazwa Dostawcy:</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        class="form-control"
+                        placeholder="Wprowadź nazwę dostawcy"
+                        required
+                    >
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-control"
+                        placeholder="Wprowadź email dostawcy"
+                    >
+                </div>
+            </div>
+
+            <!-- Numer telefonu -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Numer Telefonu:</label>
+                    <input
+                        type="text"
+                        id="phone"
+                        name="phone"
+                        class="form-control"
+                        placeholder="Wprowadź numer telefonu"
+                    >
+                </div>
+            </div>
+
+            <!-- Adres -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="address" class="form-label">Adres:</label>
+                    <textarea
+                        id="address"
+                        name="address"
+                        class="form-control"
+                        rows="3"
+                        placeholder="Wprowadź adres dostawcy"
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Przyciski akcji -->
+        <div class="d-flex flex-column flex-md-row justify-content-md-between gap-3 mt-4">
+            <a href="{% url 'supplier_list' %}" class="btn btn-outline-secondary w-100 w-md-auto">
+                <i class="bi bi-arrow-left-circle"></i> Powrót do listy dostawców
+            </a>
+            <button type="submit" class="btn btn-primary-custom w-100 w-md-auto">
+                <i class="bi bi-plus-circle"></i> Dodaj dostawcę
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

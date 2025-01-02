@@ -1,0 +1,90 @@
+{% extends "inventory/base.html" %}
+
+{% block title %}Dodaj Nowy Produkt{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="page-title mb-4 text-center">Dodaj Nowy Produkt</h1>
+    <form method="post" class="bg-white shadow-sm p-4 rounded">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="itm_name" class="form-label">Nazwa produktu:</label>
+            <input type="text" id="itm_name" name="itm_name" class="form-control" value="{{ form.itm_name.value|default_if_none:'' }}">
+        </div>
+        <!-- Kod EAN -->
+        <div class="mb-3">
+            <label for="itm_ean" class="form-label">Kod EAN:</label>
+            <input type="text" id="itm_ean" name="itm_ean" class="form-control"
+                   placeholder="Wprowadź kod EAN" value="{{ form.itm_ean.value|default_if_none:'' }}">
+        </div>
+        <!-- Kategoria -->
+        <div class="mb-3">
+            <label for="itm_catid" class="form-label">Kategoria:</label>
+            <select id="itm_catid" name="itm_catid" class="form-select">
+                <option value="" selected>-- Wybierz kategorię --</option>
+                {% for category in categories %}
+                <option value="{{ category.cat_id }}" {% if form.itm_catid.value == category.cat_id %}selected{% endif %}>
+                    {{ category.cat_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- Dostawca -->
+        <div class="mb-3">
+            <label for="itm_supid" class="form-label">Dostawca:</label>
+            <select id="itm_supid" name="itm_supid" class="form-select">
+                <option value="" selected>-- Wybierz dostawcę --</option>
+                {% for supplier in suppliers %}
+                <option value="{{ supplier.sup_id }}" {% if form.itm_supid.value == supplier.sup_id %}selected{% endif %}>
+                    {{ supplier.sup_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- Ilość minimalna -->
+        <div class="mb-3">
+            <label for="itm_minquantity" class="form-label">Ilość minimalna:</label>
+            <input type="number" id="itm_minquantity" name="itm_minquantity" class="form-control"
+                   placeholder="Wprowadź ilość minimalną" value="{{ form.itm_minquantity.value|default_if_none:'' }}">
+        </div>
+        <!-- Jednostka miary -->
+        <div class="mb-3">
+            <label for="itm_uniid" class="form-label">Jednostka miary:</label>
+            <select id="itm_uniid" name="itm_uniid" class="form-select">
+                <option value="" selected>-- Wybierz jednostkę --</option>
+                {% for units in units %}
+                <option value="{{ units.uni_id }}" {% if form.itm_uniid.value == units.uni_id %}selected{% endif %}>
+                    {{ units.uni_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- Cena -->
+        <div class="mb-3">
+            <label for="itm_price" class="form-label">Cena:</label>
+            <input type="number" id="itm_price" name="itm_price" class="form-control" step="0.01" value="{{ form.itm_price.value|default_if_none:'' }}">
+        </div>
+
+        <!-- Checkbox Aktywny -->
+        <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" id="itm_isactive" name="itm_isactive"
+                   {% if form.itm_isactive.value %}checked{% endif %}>
+            <label class="form-check-label" for="itm_isactive">
+                Aktywny
+            </label>
+        </div>
+
+        <!-- Przyciski akcji -->
+        <div class="d-flex flex-column flex-md-row justify-content-md-between gap-3 mt-4">
+            <a href="{% url 'item_list' %}" class="btn btn-outline-secondary w-100 w-md-auto">
+                <i class="bi bi-arrow-left-circle"></i> Powrót do listy produktów
+            </a>
+            <button type="submit" class="btn btn-primary-custom w-100 w-md-auto">
+                <i class="bi bi-plus-circle"></i> Dodaj produkt
+            </button>
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}

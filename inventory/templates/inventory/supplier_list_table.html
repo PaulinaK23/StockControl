@@ -1,0 +1,21 @@
+{% for supplier in suppliers %}
+<tr>
+    <td data-label="NAZWA">{{ supplier.sup_name|default_if_none:'' }}</td>
+    <td data-label="NIP">{{ supplier.sup_taxid|default_if_none:'' }}</td>
+    <td data-label="EMAIL">{{ supplier.sup_email|default_if_none:'' }}</td>
+    <td data-label="TELEFON">{{ supplier.sup_phone|default_if_none:'' }}</td>
+    <td data-label="ADRES">{{ supplier.sup_address|default_if_none:'' }}</td>
+    <td>
+        <a href="{% url 'edit_supplier' supplier.sup_id %}" class="btn btn-edit">
+            <i class="bi bi-pencil"></i>
+        </a>
+        <a href="{% url 'delete_supplier' supplier.sup_id %}" class="btn btn-delete" onclick="return confirm('Czy na pewno chcesz usunąć tego dostawcę?')">
+            <i class="bi bi-trash"></i>
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="6">Brak dostawców.</td>
+</tr>
+{% endfor %}

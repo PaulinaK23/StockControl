@@ -1,0 +1,63 @@
+/* Dostosowanie szerokości kolumn *//*
+
+#suppliers-table  th,
+#suppliers-table  td {
+    text-align: left; */
+/* Wyrównanie tekstu do lewej *//*
+
+    vertical-align: middle; */
+/* Wyrównanie tekstu w pionie *//*
+
+    padding: 10px; */
+/* Odstępy dla estetyki *//*
+
+}
+
+#suppliers-table  th {
+    font-weight: bold;
+}
+
+*/
+/* Szerokość dla kolumny NAZWA DOSTAWCY *//*
+
+#suppliers-table  th:first-child,
+#suppliers-table  td:first-child {
+    width: 20%; */
+/* Kolumna dla nazwy dostawcy *//*
+
+}
+
+*/
+/* Szerokość dla kolumny NIP *//*
+
+#suppliers-table th:nth-child(2),
+#suppliers-table td:nth-child(2) {
+    width: 10%; */
+/* Kolumna dla NIP *//*
+
+    text-align: center; */
+/* Wyrównanie do środka *//*
+
+}
+
+*/
+/* Szerokość dla kolumny EMAIL *//*
+
+#suppliers-table th:nth-child(3),
+#suppliers-table td:nth-child(3) {
+    width: 20%; */
+/* Kolumna dla adresu e-mail *//*
+
+    text-align: center;
+}
+
+*/
+/* Szerokość dla kolumny TELEFON *//*
+
+#suppliers-table th:nth-child(4),
+#suppliers-table td:nth-child(4) {
+    width: 15%; */
+/* Kolumna dla telefonu *//*
+
+    text-align: center;
+}*/

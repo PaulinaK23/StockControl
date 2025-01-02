@@ -1,0 +1,35 @@
+<nav aria-label="Paginacja">
+    <ul class="pagination justify-content-center">
+        {% if orders.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ orders.previous_page_number }}&showing={{ showing }}&ord_number={{ number_query }}&ord_date={{ date_query }}&ord_whsid={{ warehouse_query }}&ord_status={{ status_query }}&ord_supid={{ supplier_query }}">
+                    Poprzednia
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Poprzednia</a>
+            </li>
+        {% endif %}
+
+        {% for page_num in orders.paginator.page_range %}
+            <li class="page-item {% if page_num == orders.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ page_num }}&showing={{ showing }}&ord_number={{ number_query }}&ord_date={{ date_query }}&ord_whsid={{ warehouse_query }}&ord_status={{ status_query }}&ord_supid={{ supplier_query }}">
+                    {{ page_num }}
+                </a>
+            </li>
+        {% endfor %}
+
+        {% if orders.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ orders.next_page_number }}&showing={{ showing }}&ord_number={{ number_query }}&ord_date={{ date_query }}&ord_whsid={{ warehouse_query }}&ord_status={{ status_query }}&ord_supid={{ supplier_query }}">
+                    Następna
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link">Następna</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>

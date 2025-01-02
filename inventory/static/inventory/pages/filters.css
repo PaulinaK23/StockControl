@@ -1,0 +1,38 @@
+/* Styl dla filtrów w kolumnach tabeli */
+.table thead th {
+    position: relative; /* Aby można było pozycjonować ikonę w ramach kolumny */
+}
+
+.table thead th input {
+    width: 100%; /* Dopasowanie szerokości inputa do th */
+    padding-left: 30px; /* Odstęp na ikonę lupki */
+    padding-right: 10px; /* Estetyczny margines wewnętrzny */
+    border: 1px solid #E0E0E0; /* Subtelna ramka */
+    border-radius: 4px; /* Zaokrąglenie rogów */
+    font-size: 0.85rem; /* Zmniejszenie czcionki */
+    background-color: #F9F9F9; /* Jasnoszare tło */
+    color: #333333; /* Ciemniejszy tekst */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Płynne animacje */
+}
+
+.table thead th input:focus {
+    border-color: #00897B; /* Zielona ramka na focus */
+    box-shadow: 0 0 5px rgba(0, 137, 123, 0.5); /* Subtelny cień */
+    outline: none; /* Usuń standardowy outline */
+}
+
+.table thead th .filter-icon {
+    position: absolute; /* Ustawienie ikony względem th */
+    top: 50%; /* Wyśrodkowanie w pionie */
+    left: 8px; /* Odstęp od lewej */
+    transform: translateY(-50%); /* Idealne wyśrodkowanie */
+    font-size: 0.85rem; /* Rozmiar dopasowany do inputa */
+    color: #6c757d; /* Stonowany kolor */
+    pointer-events: none; /* Ikona nie przeszkadza przy klikaniu w input */
+}
+
+/* Styl hover na ikonę */
+.table thead th input:hover + .filter-icon,
+.table thead th input:focus + .filter-icon {
+    color: #00897B; /* Zielony kolor ikony na hover/focus */
+}

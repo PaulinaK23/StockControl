@@ -1,0 +1,21 @@
+{% for order in orders %}
+<tr>
+    <td data-label="Numer">{{ order.ord_number }}</td>
+    <td data-label="Data">{{ order.ord_date|date:"Y-m-d H:i" }}</td>
+    <td data-label="Magazyn">{{ order.ord_whsid.whs_name }}</td>
+    <td data-label="Status">{{ order.ord_statusid.sta_name }}</td>
+    <td data-label="Dostawca">{{ order.ord_supid.sup_name|default_if_none:"-" }}</td>
+    <td>
+        <a href="{% url 'edit_order' order.ord_id %}" class="btn btn-edit">
+            <i class="bi bi-pencil"></i>
+        </a>
+        <a href="{% url 'delete_order' order.ord_id %}" class="btn btn-delete" onclick="return confirm('Czy na pewno chcesz usunąć to zamówienie?')">
+            <i class="bi bi-trash"></i>
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="6" class="text-center">Brak zamówień.</td>
+</tr>
+{% endfor %}

@@ -1,0 +1,37 @@
+.scrollable-table {
+    max-height: 300px;
+    overflow-y: auto; /* Przewijanie w pionie */
+    border: 1px solid #ddd; /* Obramowanie tabeli */
+}
+
+.table th {
+    position: sticky; /* Ustawienie "lepkości" nagłówków */
+    top: 0; /* Przylegają do górnej krawędzi kontenera */
+    z-index: 2; /* Ustawienie nagłówków nad resztą wierszy */
+    background-color: #f8f9fa; /* Tło nagłówków */
+    text-align: center; /* Wyśrodkowanie tekstu w nagłówkach */
+    border-bottom: 2px solid #ddd; /* Dolna krawędź nagłówków */
+}
+
+.table th, .table td {
+    white-space: nowrap; /* Zapobieganie zawijaniu tekstu */
+    padding: 8px 10px; /* Dostosowanie odstępów */
+    font-size: 0.9rem; /* Rozmiar czcionki */
+}
+
+.table .wide-column {
+    width: 40%; /* Szersze kolumny dla nazwy i magazynu */
+}
+
+.table .narrow-column {
+    width: 10%; /* Węższe kolumny dla ilości */
+    text-align: center; /* Wyśrodkowanie ilości */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9; /* Kolor dla nieparzystych wierszy */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #dbebe8; /* Kolor wiersza po najechaniu */
+}

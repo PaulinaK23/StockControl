@@ -1,0 +1,100 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <!-- Tytuł -->
+    <div class="col-12 col-md-6 mb-2 mb-md-0">
+        <h1 class="page-title">Zamówienia</h1>
+    </div>
+
+    <!-- Akcje -->
+    <div class="col-12 col-md-6 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-end gap-2">
+        <!-- Pokazuje -->
+        <div class="d-flex align-items-center">
+            <form method="get" id="showing-form">
+                <label for="showing-select" class="me-2">Pokazuje:</label>
+                <select id="showing-select" name="showing" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="10" {% if showing == 10 %}selected{% endif %}>10</option>
+                    <option value="20" {% if showing == 20 %}selected{% endif %}>20</option>
+                    <option value="50" {% if showing == 50 %}selected{% endif %}>50</option>
+                </select>
+
+                <input type="hidden" name="ord_number" value="{{ number_query }}">
+                <input type="hidden" name="ord_date" value="{{ date_query }}">
+                <input type="hidden" name="ord_whsid" value="{{ warehouse_query }}">
+                <input type="hidden" name="ord_status" value="{{ status_query }}">
+                <input type="hidden" name="ord_supid" value="{{ supplier_query }}">
+                <input type="hidden" name="page" value="1">
+            </form>
+        </div>
+
+
+        <!-- Eksport -->
+        <a id="export-button" href="{% url 'export_orders_to_excel' %}" class="btn btn-outline-custom">
+            <i class="bi bi-file-earmark-excel"></i> Eksportuj
+        </a>
+
+        <!-- Dodaj Zamówienie -->
+        <a href="{% url 'add_order' %}" class="btn btn-primary-custom">
+            <i class="bi bi-plus-circle"></i> Dodaj Zamówienie
+        </a>
+    </div>
+</div>
+
+<!-- Tabela zamówień -->
+<div id="orders-table-container">
+    <table class="table" id="orders-table">
+        <thead>
+            <tr>
+                <th>
+                    NUMER
+                    <div class="position-relative">
+                        <input id="ord_number-filter" name="ord_number" type="text" class="form-control form-control-sm" value="{{ number_query }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    DATA
+                    <div class="position-relative">
+                        <input id="ord_date-filter" name="ord_date" type="text" class="form-control form-control-sm" value="{{ date_query }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    MAGAZYN
+                    <div class="position-relative">
+                        <input id="ord_whsid-filter" name="ord_whsid" type="text" class="form-control form-control-sm" value="{{ warehouse_query }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    STATUS
+                    <div class="position-relative">
+                        <input id="ord_status-filter" name="ord_status" type="text" class="form-control form-control-sm" value="{{ status_query }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    DOSTAWCA
+                    <div class="position-relative">
+                        <input id="ord_supid-filter" name="ord_supid" type="text" class="form-control form-control-sm" value="{{ supplier_query }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>AKCJE</th>
+            </tr>
+        </thead>
+        <tbody id="order-list-body">
+            {% include "inventory/order_list_table.html" %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Paginacja -->
+<div id="pagination-container" class="d-flex justify-content-center mt-3">
+    {% include "inventory/order_list_pagination.html" %}
+</div>
+
+<script src="{% static 'inventory/filter_orders.js' %}"></script>
+{% endblock %}

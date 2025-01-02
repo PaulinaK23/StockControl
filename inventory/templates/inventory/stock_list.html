@@ -1,0 +1,82 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <!-- Tytuł -->
+    <div class="col-12 col-md-6 mb-2 mb-md-0">
+        <h1 class="page-title">Stany Magazynowe</h1>
+    </div>
+
+    <!-- Akcje -->
+    <div class="col-12 col-md-6 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-end gap-2">
+        <!-- Pokazuje -->
+        <div class="d-flex align-items-center">
+            <form method="get" id="showing-form">
+                <label for="showing-select" class="me-2">Pokazuje:</label>
+                <select id="showing-select" name="showing" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="10" {% if showing == 10 %}selected{% endif %}>10</option>
+                    <option value="20" {% if showing == 20 %}selected{% endif %}>20</option>
+                    <option value="50" {% if showing == 50 %}selected{% endif %}>50</option>
+                </select>
+
+                <input type="hidden" name="product" value="{{ product_query }}">
+                <input type="hidden" name="warehouse" value="{{ warehouse_query }}">
+                <input type="hidden" name="quantity" value="{{ quantity_query }}">
+                <input type="hidden" name="page" value="1">
+            </form>
+        </div>
+
+        <!-- Eksport -->
+        <a id="export-button" href="{% url 'export_stocks_to_excel' %}" class="btn btn-outline-custom">
+            <i class="bi bi-file-earmark-excel"></i> Eksportuj
+        </a>
+
+        <!-- Dodaj Stan -->
+        <a href="{% url 'add_stock' %}" class="btn btn-primary-custom">
+            <i class="bi bi-plus-circle"></i> Dodaj Stan
+        </a>
+    </div>
+</div>
+
+<!-- Tabela Stanów Magazynowych -->
+<div id="stocks-table-container">
+    <table class="table" id="stocks-table">
+        <thead>
+            <tr>
+                <th>
+                    Produkt
+                    <div class="position-relative">
+                        <input id="product-filter" name="product" type="text" class="form-control form-control-sm" value="{{ product_query }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    Magazyn
+                    <div class="position-relative">
+                        <input id="warehouse-filter" name="warehouse" type="text" class="form-control form-control-sm" value="{{ warehouse_query }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>
+                    Ilość
+                    <div class="position-relative">
+                        <input id="quantity-filter" name="quantity" type="text" class="form-control form-control-sm" value="{{ quantity_query }}">
+                        <i class="bi bi-search filter-icon"></i>
+                    </div>
+                </th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody id="stock-list-body">
+            {% include "inventory/stock_list_table.html" %}
+        </tbody>
+    </table>
+</div>
+<!-- Paginacja -->
+<div id="pagination-container" class="d-flex justify-content-center mt-3">
+    {% include "inventory/stock_list_pagination.html" %}
+</div>
+
+<script src="{% static 'inventory/filter_stock.js' %}"></script>
+{% endblock %}
