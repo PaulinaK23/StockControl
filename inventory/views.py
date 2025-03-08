@@ -9,6 +9,7 @@ from django.shortcuts import render
 from django.db.models import Q, Count, F, IntegerField, OuterRef, Subquery
 from itertools import product
 from django.db import models
+import json
 from django.http import JsonResponse
 from django.db.models.functions import Coalesce
 from django.db.models import DecimalField, Value, FloatField
@@ -19,12 +20,14 @@ from openpyxl.styles import Font
 from django.forms import inlineformset_factory
 from django.db import transaction
 from datetime import datetime
+from django.forms import modelformset_factory
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 import re
 from pathlib import Path
 from django.core.paginator import Paginator
 from django.utils.timezone import now
+
 
 
 def home(request):
@@ -172,38 +175,54 @@ def ajax_filter_items(request):
 
     return render(request, 'inventory/item_list_table.html', {'items': items})
 
-def stock_list(request):
-    showing = int(request.GET.get('showing', 10))  # Liczba elementów na stronie
-    page_number = request.GET.get('page', 1)  # Numer strony
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.db.models import Q
+from .models import Stock
 
+def stock_list(request):
+    # Pobranie liczby elementów na stronę (domyślnie 10)
+    stocks_per_page = request.GET.get('showing', '10').strip()
+    try:
+        stocks_per_page = int(stocks_per_page) if stocks_per_page.isdigit() else 10
+    except ValueError:
+        stocks_per_page = 10  # Domyślna wartość w przypadku błędu
+
+    # Filtry
     product_query = request.GET.get('product', '').strip()
     warehouse_query = request.GET.get('warehouse', '').strip()
     quantity_query = request.GET.get('quantity', '').strip()
 
+    # Pobranie danych z bazy
+    stocks = Stock.objects.select_related('stk_itmid', 'stk_whsid').all()
+
     # Filtrowanie
-    stocks = Stock.objects.all()
     if product_query:
         stocks = stocks.filter(stk_itmid__itm_name__icontains=product_query)
     if warehouse_query:
         stocks = stocks.filter(stk_whsid__whs_name__icontains=warehouse_query)
     if quantity_query:
-        stocks = stocks.filter(stk_qty__icontains=quantity_query)
+        try:
+            stocks = stocks.filter(stk_qty=int(quantity_query))
+        except ValueError:
+            pass
 
     # Paginacja
-    paginator = Paginator(stocks, showing)
-    try:
-        page_obj = paginator.get_page(page_number)
-    except (PageNotAnInteger, EmptyPage):
-        page_obj = paginator.get_page(1)
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(stocks, stocks_per_page)
+    page_obj = paginator.get_page(page_number)
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':  # Zapytanie AJAX
+    # AJAX – dynamiczne ładowanie tabeli i paginacji
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         table_html = render_to_string('inventory/stock_list_table.html', {'stocks': page_obj})
         pagination_html = render_to_string('inventory/stock_list_pagination.html', {'stocks': page_obj})
         return JsonResponse({'html': table_html, 'pagination': pagination_html})
 
     return render(request, 'inventory/stock_list.html', {
         'stocks': page_obj,
-        'showing': showing,
+        'stocks_per_page': stocks_per_page,
         'product_query': product_query,
         'warehouse_query': warehouse_query,
         'quantity_query': quantity_query,
@@ -314,10 +333,12 @@ def edit_supplier(request, supplier_id):
 
 
 def delete_supplier(request, supplier_id):
-    supplier = Suppliers.objects.get(pk=supplier_id)
+    # Pobierz dostawcę lub zwróć 404, jeśli nie istnieje
+    supplier = get_object_or_404(Suppliers, pk=supplier_id)
+    # Usuń dostawcę
     supplier.delete()
-    return HttpResponseRedirect('/items/suppliers/')
-
+    # Przekieruj do listy dostawców
+    return redirect('supplier_list')
 
 def order_list(request):
     showing = int(request.GET.get('showing', 10))
@@ -370,121 +391,107 @@ def order_list(request):
 
 
 def add_order(request):
-    OrderItemFormSet = inlineformset_factory(Orders, OrderItems, form=OrderItemForm, extra=1, can_delete=True)
-
     if request.method == 'POST':
-        form = OrderForm(request.POST)
-        formset = OrderItemFormSet(request.POST)
+        try:
+            data = json.loads(request.body)
 
-        if form.is_valid() and formset.is_valid():
             with transaction.atomic():
+                current_time = now()
+                year = current_time.strftime("%y")
+                month = current_time.strftime("%m")
 
-                order = form.save(commit=False)
-
-                now = datetime.now()
-                year = now.strftime("%y")  # Dwucyfrowy rok
-                month = now.strftime("%m")  # Dwucyfrowy miesiąc
-
-                # Pobiernie ostatnie zamówienie w bieżącym roku i miesiącu
                 last_order = Orders.objects.filter(
-                    ord_date__year=now.year,
-                    ord_date__month=now.month
+                    ord_date__year=current_time.year,
+                    ord_date__month=current_time.month
                 ).order_by('-ord_id').first()
 
+                next_number = 1
                 if last_order and last_order.ord_number:
-                    # Wyciągnięcie numeru porządkowego za pomocą wyrażenia regularnego
-                    match = re.search(r'/(\d+)$', last_order.ord_number)
+                    match = re.search(r'(\d+)$', last_order.ord_number)
                     if match:
-                        last_number = int(match.group(1))  # Ostatni numer
-                        next_number = last_number + 1
-                    else:
-                        next_number = 1
-                else:
-                    next_number = 1
+                        next_number = int(match.group(1)) + 1
 
-                # Tworzymy nowy numer zamówienia w formacie ORD/RR/MM/NumerKolejny
                 order_number = f"ORD/{year}/{month}/{next_number:03d}"
-                order.ord_number = order_number
 
+                order = Orders.objects.create(
+                    ord_number=order_number,
+                    ord_date=data.get("order_date", current_time),
+                    ord_statusid_id=data.get("order_status"),
+                    ord_whsid_id=data.get("warehouse"),
+                    ord_supid_id=data.get("supplier"),
+                )
 
-                order.save()
+                for item in data.get("items", []):
+                    OrderItems.objects.create(
+                        oit_ordid=order,
+                        oit_itmid_id=item["item"],
+                        oit_quantity=item["quantity"],
+                        oit_price=item["price"]
+                    )
 
-                formset.instance = order
-                formset.save()
+            return JsonResponse({"success": True, "order_number": order_number})
 
-                # Wyliczenie `Ord_Total` na podstawie pozycji
-                total = sum(item.oit_quantity * item.oit_price for item in order.order_items.all())
-                order.ord_total = total
-                order.save()
-
-            return redirect('order_list')
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
 
     else:
         form = OrderForm()
-        formset = OrderItemFormSet()
-
-    return render(request, 'inventory/add_order.html', {
-        'form': form,
-        'formset': formset,
-    })
+        items = Items.objects.all()
+        return render(request, 'inventory/add_order.html', {
+            'form': form,
+            'items': items,
+        })
 
 def edit_order(request, order_id):
-    # Pobierz zamówienie
     order = get_object_or_404(Orders, pk=order_id)
-    OrderItemFormSet = inlineformset_factory(
-        Orders, OrderItems, form=OrderItemForm, extra=1, can_delete=True
-    )
+    OrderItemFormset = modelformset_factory(OrderItems, form=OrderItemForm, extra=0)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = OrderForm(request.POST, instance=order)
-        formset = OrderItemFormSet(request.POST, instance=order)
-
-        # Logowanie błędów
-        if not form.is_valid():
-            print("Błędy formularza głównego:", form.errors)
-
-        if not formset.is_valid():
-            print("Błędy formsetu:", formset.errors)  # Szczegółowe błędy każdego formularza
-            print("Błędy globalne formsetu:", formset.non_form_errors())  # Błędy globalne
-            print("Dane POST przesłane do formsetu:", request.POST)  # Dane przesłane w żądaniu
+        formset = OrderItemFormset(request.POST, queryset=OrderItems.objects.filter(oit_ordid=order))
 
         if form.is_valid() and formset.is_valid():
-            with transaction.atomic():
-                order = form.save()
-                items = formset.save(commit=False)
+            # Zapisz zamówienie
+            order = form.save()
 
-                for item in items:
-                    # Ignoruj puste formularze
-                    if not item.oit_itmid or not item.oit_quantity or not item.oit_price:
-                        item.delete()
-                        continue
-                    item.oit_ordid = order
-                    item.save()
+            # Zapisz pozycje zamówienia
+            instances = formset.save(commit=False)
+            for instance in instances:
+                instance.oit_ordid = order  # Przypisz zamówienie do pozycji
+                instance.save()
 
-                formset.save_m2m()  # Zapisz powiązania ManyToMany
+            # Usuń pozycje oznaczone do usunięcia
+            for instance in formset.deleted_objects:
+                instance.delete()
 
-                # Przeliczenie total zamówienia
-                total = sum(item.oit_quantity * item.oit_price for item in order.order_items.all())
-                order.ord_total = total
-                order.save()
-
-            return redirect('order_list')
+            return JsonResponse({"success": True})
+        else:
+            # Jeśli formularz jest nieprawidłowy, zwróć błędy
+            errors = {
+                "form_errors": form.errors,
+                "formset_errors": formset.errors,
+            }
+            return JsonResponse({"success": False, "errors": errors})
 
     else:
+        # GET request: wyświetl formularz do edycji
         form = OrderForm(instance=order)
-        formset = OrderItemFormSet(instance=order)
+        formset = OrderItemFormset(queryset=OrderItems.objects.filter(oit_ordid=order))
+        all_products = Items.objects.all()
 
-    return render(request, 'inventory/edit_order.html', {
-        'form': form,
-        'formset': formset,
-    })
-
+        return render(request, "inventory/edit_order.html", {
+            "form": form,
+            "formset": formset,
+            "all_products": all_products,
+            "order_id": order_id,  # Przekazanie order_id do szablonu
+        })
 def delete_order(request, order_id):
+    # Pobierz dostawcę lub zwróć 404, jeśli nie istnieje
     order = get_object_or_404(Orders, pk=order_id)
-    if request.method == 'POST':
-        order.delete()
-        return redirect('order_list')
-    return render(request, 'inventory/delete_order.html', {'order': order})
+    # Usuń dostawcę
+    order.delete()
+    # Przekieruj do listy dostawców
+    return redirect('order_list')  # Użyj nazwy ścieżki zdefiniowanej w urls.py
 
 def dashboard(request):
     # Liczba zamówień według statusów
@@ -680,11 +687,12 @@ def export_stocks_to_excel(request):
 
 
 def export_orders_to_excel(request):
-    # Pobranie zamówień z uwzględnieniem filtrów
+    # Pobierz parametry GET
+
     number_query = request.GET.get('ord_number', '').strip()
     date_query = request.GET.get('ord_date', '').strip()
     warehouse_query = request.GET.get('ord_whsid', '').strip()
-    status_query = request.GET.get('ord_statusid', '').strip()
+    status_query = request.GET.get('ord_status', '').strip()
     supplier_query = request.GET.get('ord_supid', '').strip()
 
     orders = Orders.objects.select_related('ord_statusid', 'ord_whsid', 'ord_supid').all()
@@ -699,16 +707,16 @@ def export_orders_to_excel(request):
     if supplier_query:
         orders = orders.filter(ord_supid__sup_name__icontains=supplier_query)
 
-    # Utworzenie arkusza Excela
+    # Tworzenie arkusza Excela
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Zamówienia"
 
-    # Dodanie nagłówków
+    # Nagłówki
     headers = ['Numer Zamówienia', 'Data', 'Magazyn', 'Status', 'Dostawca', 'Kwota']
     ws.append(headers)
 
-    # Dodanie danych
+    # Dane
     for order in orders:
         ws.append([
             order.ord_number,
@@ -719,11 +727,11 @@ def export_orders_to_excel(request):
             float(order.ord_total)
         ])
 
-    # Zapisanie i wysłanie pliku
     response = HttpResponse(
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
     response['Content-Disposition'] = 'attachment; filename=zamowienia.xlsx'
     wb.save(response)
     return response
+
 

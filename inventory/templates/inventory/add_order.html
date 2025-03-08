@@ -1,61 +1,103 @@
 {% extends "inventory/base.html" %}
 {% load static %}
+
 {% block title %}Dodaj Zamówienie{% endblock %}
 
 {% block content %}
-<h1 class="page-title mb-4">Dodaj Zamówienie</h1>
-<form method="post" novalidate>
-    {% csrf_token %}
 
-    <!-- Szczegóły Zamówienia -->
-    <fieldset class="mb-4">
-        <legend>Szczegóły Zamówienia</legend>
-        {{ form.as_p }}
-    </fieldset>
 
-    <!-- Pozycje Zamówienia -->
-    <fieldset>
-        <legend>Pozycje Zamówienia</legend>
-        {{ formset.management_form }}
-        <table class="table table-bordered" id="order-items-table">
-            <thead>
-                <tr>
-                    <th>Produkt</th>
-                    <th>Ilość</th>
-                    <th>Cena jednostkowa</th>
-                    <th>Usuń</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for form in formset %}
+<div class="container py-4">
+    <h1 class="page-title text-center mb-4">📝 Dodaj Zamówienie</h1>
+
+    <form method="post" id="order-form" class="bg-white shadow-sm p-4 rounded">
+        {% csrf_token %}
+
+        <!-- Szczegóły zamówienia -->
+        <fieldset class="mb-4 p-3 border rounded">
+            <legend class="h5 mb-3">Szczegóły Zamówienia</legend>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Numer Zamówienia:</label>
+                    {{ form.ord_number }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Data Zamówienia:</label>
+                    {{ form.ord_date }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Status Zamówienia:</label>
+                    {{ form.ord_statusid }}
+                            {% if form.ord_number.errors %}
+            <div class="alert alert-danger">
+                {{ form.ord_number.errors }}
+            </div>
+        {% endif %}
+                </div>
+            </div>
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label class="form-label">Magazyn:</label>
+                    {{ form.ord_whsid }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Dostawca:</label>
+                    {{ form.ord_supid }}
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Pozycje zamówienia -->
+        <fieldset class="p-3 border rounded">
+            <legend class="h5 mb-3">Pozycje Zamówienia</legend>
+            {{ formset.management_form }}
+
+            <table class="table table-striped text-center" id="order-items-table">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Produkt</th>
+                        <th>Ilość</th>
+                        <th>Cena jednostkowa</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in formset %}
                     <tr class="order-item-form">
                         <td>{{ form.oit_itmid }}</td>
                         <td>{{ form.oit_quantity }}</td>
                         <td>{{ form.oit_price }}</td>
                         <td>
-                            {{ form.DELETE }}
+                            <button type="button" class="btn btn-delete">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button type="button" class="btn btn-outline-secondary" id="add-item-btn">
-            <i class="bi bi-plus-circle"></i> Dodaj Pozycję
-        </button>
-    </fieldset>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-    <!-- Przyciski akcji -->
-    <div class="d-flex justify-content-between mt-4">
-        <a href="{% url 'order_list' %}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left-circle"></i> Powrót do listy
-        </a>
-        <button type="submit" class="btn btn-primary-custom">
-            <i class="bi bi-save"></i> Zapisz Zamówienie
-        </button>
-    </div>
-</form>
+            <div class="text-center mt-3">
+                <button type="button" class="btn btn-primary-custom w-md-auto" id="add-item-btn">
+                    <i class="bi bi-plus-circle"></i> Dodaj Pozycję
+                </button>
+            </div>
+        </fieldset>
 
+        <!-- Przyciski akcji -->
+        <div class="d-flex flex-column flex-md-row justify-content-md-between gap-3 mt-4">
+            <a href="{% url 'item_list' %}" class="btn btn-outline-secondary w-100 w-md-auto">
+                <i class="bi bi-arrow-left-circle"></i> Powrót do listy zamówień
+            </a>
+            <button type="button" class="btn btn-primary-custom w-100 w-md-auto" id="save-order-btn">
+                <i class="bi bi-plus-circle"></i> Zapisz Zamówienie
+            </button>
 
-<script src="{% static 'inventory/add_order.js' %}"></script>
+        </div>
+    </form>
+</div>
+
+<!-- Import JavaScript -->
+<script src="{% static 'inventory/add_order.js' %}" defer></script>
+
 {% endblock %}
 

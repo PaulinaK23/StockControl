@@ -4,19 +4,43 @@
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="page-title mb-4 text-center">Edytuj Zamówienie</h1>
+    <h1 class="page-title mb-4 text-center">📝 Edytuj Zamówienie</h1>
 
-    <form method="post" class="bg-white shadow-sm p-4 rounded" novalidate>
+
+    <form method="post" id="edit-order-form" class="bg-white shadow-sm p-4 rounded" novalidate data-order-id="{{ order_id }}">
         {% csrf_token %}
 
         <!-- Szczegóły Zamówienia -->
-        <fieldset class="mb-4">
+        <fieldset class="mb-4 p-3 border rounded">
             <legend class="fs-5 fw-bold">Szczegóły Zamówienia</legend>
-            {{ form.as_p }}
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Numer Zamówienia:</label>
+                    {{ form.ord_number }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Data Zamówienia:</label>
+                    {{ form.ord_date }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Status Zamówienia:</label>
+                    {{ form.ord_statusid }}
+                </div>
+            </div>
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label class="form-label">Magazyn:</label>
+                    {{ form.ord_whsid }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Dostawca:</label>
+                    {{ form.ord_supid }}
+                </div>
+            </div>
         </fieldset>
 
         <!-- Pozycje Zamówienia -->
-        <fieldset>
+        <fieldset class="p-3 border rounded">
             <legend class="fs-5 fw-bold">Pozycje Zamówienia</legend>
             {{ formset.management_form }}
             <table class="table table-bordered" id="order-items-table">
@@ -30,23 +54,30 @@
                 </thead>
                 <tbody>
                     {% for form in formset %}
-                        {% if form.instance.pk or form.is_bound %}
-                            <tr class="order-item-form">
-                                <td data-label="Produkt">{{ form.oit_itmid }}</td>
-                                <td data-label="Ilość">{{ form.oit_quantity }}</td>
-                                <td data-label="Cena">{{ form.oit_price }}</td>
-                                <td>
-                                    <button type="button" class="btn btn-danger btn-sm remove-item-btn" aria-label="Usuń pozycję">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                    {% if form.instance.pk %}
-                                        <input type="hidden" name="{{ form.prefix }}-DELETE" id="id_{{ form.prefix }}-DELETE">
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endif %}
+                    <tr class="order-item-form">
+                        <td>
+                            <select name="form-{{ forloop.counter0 }}-oit_itmid" class="form-control item-select">
+                                {% for item in all_products %}
+                                <option value="{{ item.itm_id }}" {% if form.oit_itmid.value|stringformat:"s" == item.itm_id|stringformat:"s" %}selected{% endif %}>
+                                    {{ item.itm_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" name="form-{{ forloop.counter0 }}-oit_quantity" class="form-control quantity-input" min="1" value="{{ form.oit_quantity.value }}">
+                        </td>
+                        <td>
+                            <input type="text" name="form-{{ forloop.counter0 }}-oit_price" class="form-control price-input" value="{{ form.oit_price.value }}">
+                        </td>
+                        <td>
+                            <input type="checkbox" name="form-{{ forloop.counter0 }}-DELETE" class="delete-checkbox" style="display: none;">
+                            <button type="button" class="btn btn-danger btn-sm remove-item-btn">
+                                <i class="bi bi-trash"></i> Usuń
+                            </button>
+                        </td>
+                    </tr>
                     {% endfor %}
-
                 </tbody>
             </table>
             <button type="button" class="btn btn-outline-secondary" id="add-item-btn">
@@ -65,6 +96,7 @@
         </div>
     </form>
 
-    <script src="{% static 'inventory/add_order.js' %}"></script>
+    <!-- JavaScript dla dynamicznego zarządzania wierszami -->
+    <script src="{% static 'inventory/edit_order.js' %}"></script>
 </div>
 {% endblock %}

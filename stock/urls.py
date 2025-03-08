@@ -1,7 +1,11 @@
 from django.urls import path
 from inventory import views
+from django.http import JsonResponse
+from inventory.models import Items
 
-
+def get_items(request):
+    items = Items.objects.values("itm_id", "itm_name")  # Pobieramy ID i nazwę Items
+    return JsonResponse({"items": list(items)})
 
 urlpatterns = [
     # Strona główna
@@ -35,6 +39,8 @@ urlpatterns = [
     path('orders/<int:order_id>/edit/', views.edit_order, name='edit_order'),
     path('orders/<int:order_id>/delete/', views.delete_order, name='delete_order'),
     path('orders/export/', views.export_orders_to_excel, name='export_orders_to_excel'),
+
+    path("api/items/", get_items, name="get_items"),
 
 
 ]

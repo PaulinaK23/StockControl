@@ -4,27 +4,143 @@
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="page-title mb-4 text-center">Edytuj Dostawcę</h1>
+    <h1 class="page-title mb-4 text-center">🚚 Edytuj Dostawcę</h1>
     <form method="post" class="bg-white shadow-sm p-4 rounded">
         {% csrf_token %}
 
         <div class="row g-3">
-            {% for field in form %}
+            <!-- Nazwa dostawcy -->
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">
-                        {{ field.label }}
-                    </label>
-                    {{ field }}
-                    {% if field.help_text %}
-                    <div class="form-text">{{ field.help_text }}</div>
+                    <label for="sup_name" class="form-label">Nazwa dostawcy:</label>
+                    <input
+                        type="text"
+                        id="sup_name"
+                        name="sup_name"
+                        class="form-control {% if form.sup_name.errors %}is-invalid{% endif %}"
+                        value="{{ form.sup_name.value|default_if_none:'' }}"
+                        placeholder="Wprowadź nazwę dostawcy"
+                    >
+                    {% if form.sup_name.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.sup_name.errors|join:", " }}
+                    </div>
                     {% endif %}
-                    {% for error in field.errors %}
-                    <div class="invalid-feedback d-block">{{ error }}</div>
-                    {% endfor %}
                 </div>
             </div>
-            {% endfor %}
+
+            <!-- NIP -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="sup_taxid" class="form-label">NIP:</label>
+                    <input
+                        type="text"
+                        id="sup_taxid"
+                        name="sup_taxid"
+                        class="form-control {% if form.sup_taxid.errors %}is-invalid{% endif %}"
+                        value="{{ form.sup_taxid.value|default_if_none:'' }}"
+                        placeholder="Wprowadź NIP dostawcy"
+                    >
+                    {% if form.sup_taxid.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.sup_taxid.errors|join:", " }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="sup_email" class="form-label">Email:</label>
+                    <input
+                        type="email"
+                        id="sup_email"
+                        name="sup_email"
+                        class="form-control {% if form.sup_email.errors %}is-invalid{% endif %}"
+                        value="{{ form.sup_email.value|default_if_none:'' }}"
+                        placeholder="Wprowadź email dostawcy"
+                    >
+                    {% if form.sup_email.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.sup_email.errors|join:", " }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Numer telefonu -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="sup_phone" class="form-label">Numer telefonu:</label>
+                    <input
+                        type="text"
+                        id="sup_phone"
+                        name="sup_phone"
+                        class="form-control {% if form.sup_phone.errors %}is-invalid{% endif %}"
+                        value="{{ form.sup_phone.value|default_if_none:'' }}"
+                        placeholder="Wprowadź numer telefonu"
+                    >
+                    {% if form.sup_phone.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.sup_phone.errors|join:", " }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Warunki płatności -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="sup_payment_terms" class="form-label">Warunki płatności:</label>
+                    <textarea
+                        id="sup_payment_terms"
+                        name="sup_payment_terms"
+                        class="form-control {% if form.sup_payment_terms.errors %}is-invalid{% endif %}"
+                        rows="3"
+                        placeholder="Wprowadź warunki płatności"
+                    >{{ form.sup_payment_terms.value|default_if_none:'' }}</textarea>
+                    {% if form.sup_payment_terms.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.sup_payment_terms.errors|join:", " }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Adres -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="sup_address" class="form-label">Adres:</label>
+                    <textarea
+                        id="sup_address"
+                        name="sup_address"
+                        class="form-control {% if form.sup_address.errors %}is-invalid{% endif %}"
+                        rows="3"
+                        placeholder="Wprowadź adres dostawcy"
+                    >{{ form.sup_address.value|default_if_none:'' }}</textarea>
+                    {% if form.sup_address.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.sup_address.errors|join:", " }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkbox Aktywny -->
+        <div class="form-check mt-4 d-flex align-items-center">
+            <input class="form-check-input {% if form.sup_isactive.errors %}is-invalid{% endif %}"
+                   type="checkbox"
+                   id="sup_isactive"
+                   name="sup_isactive"
+                   {% if form.sup_isactive.value %}checked{% endif %}>
+            <label class="form-check-label ms-2" for="sup_isactive">Aktywny</label>
+            {% if form.sup_isactive.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.sup_isactive.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
 
         <!-- Przyciski akcji -->

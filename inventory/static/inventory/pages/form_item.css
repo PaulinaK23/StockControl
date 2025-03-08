@@ -84,6 +84,12 @@ form.bg-white {
     border-color: #004D40; /* Ciemniejszy zielony */
     box-shadow: 0 0 5px rgba(0, 77, 64, 0.5); /* Delikatny zielony cień */
 }
+
+input[readonly] {
+    background-color: #E0E0E0;
+    cursor: not-allowed;
+}
+
 /* Responsywne poprawki */
 @media (max-width: 768px) {
     /* Formularz */
@@ -131,4 +137,5 @@ form.bg-white {
     form {
         max-width: 100%; /* Formularz zajmuje pełną szerokość */
     }
+
 }

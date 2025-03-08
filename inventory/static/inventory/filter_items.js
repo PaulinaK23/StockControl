@@ -29,21 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 tableBody.innerHTML = data.html; // Zaktualizuj tabelę
                 paginationContainer.innerHTML = data.pagination; // Zaktualizuj paginację
-                setupPaginationLinks(); // Ponownie zainicjalizuj paginację
+
                 updateExportUrl(); // Zaktualizuj link eksportu
             })
             .catch(error => console.error("Error:", error));
     };
 
-    const setupPaginationLinks = () => {
-        const paginationLinks = document.querySelectorAll('#pagination-container a.page-link');
-        paginationLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                fetchFilteredData(link.href);
-            });
-        });
-    };
+
 
     // Nasłuchuj zmian w polach filtrów
     inputs.forEach(input => {
@@ -51,6 +43,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Inicjalizuj dynamiczne linki paginacji i eksportu przy pierwszym załadowaniu
-    setupPaginationLinks();
     updateExportUrl();
 });

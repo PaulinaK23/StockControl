@@ -4,23 +4,36 @@
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="page-title mb-4 text-center">Dodaj Nowy Produkt</h1>
+    <h1 class="page-title mb-4 text-center">🛒 Dodaj Nowy Produkt</h1>
     <form method="post" class="bg-white shadow-sm p-4 rounded">
         {% csrf_token %}
+
+        <!-- Nazwa produktu -->
         <div class="mb-3">
             <label for="itm_name" class="form-label">Nazwa produktu:</label>
-            <input type="text" id="itm_name" name="itm_name" class="form-control" value="{{ form.itm_name.value|default_if_none:'' }}">
+            <input type="text" id="itm_name" name="itm_name" class="form-control {% if form.itm_name.errors %}is-invalid{% endif %}" value="{{ form.itm_name.value|default_if_none:'' }}">
+            {% if form.itm_name.errors %}
+                <div class="invalid-feedback">
+                    {{ form.itm_name.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
+
         <!-- Kod EAN -->
         <div class="mb-3">
             <label for="itm_ean" class="form-label">Kod EAN:</label>
-            <input type="text" id="itm_ean" name="itm_ean" class="form-control"
-                   placeholder="Wprowadź kod EAN" value="{{ form.itm_ean.value|default_if_none:'' }}">
+            <input type="text" id="itm_ean" name="itm_ean" class="form-control {% if form.itm_ean.errors %}is-invalid{% endif %}" placeholder="Wprowadź kod EAN" value="{{ form.itm_ean.value|default_if_none:'' }}">
+            {% if form.itm_ean.errors %}
+                <div class="invalid-feedback">
+                    {{ form.itm_ean.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
+
         <!-- Kategoria -->
         <div class="mb-3">
             <label for="itm_catid" class="form-label">Kategoria:</label>
-            <select id="itm_catid" name="itm_catid" class="form-select">
+            <select id="itm_catid" name="itm_catid" class="form-select {% if form.itm_catid.errors %}is-invalid{% endif %}">
                 <option value="" selected>-- Wybierz kategorię --</option>
                 {% for category in categories %}
                 <option value="{{ category.cat_id }}" {% if form.itm_catid.value == category.cat_id %}selected{% endif %}>
@@ -28,11 +41,17 @@
                 </option>
                 {% endfor %}
             </select>
+            {% if form.itm_catid.errors %}
+                <div class="invalid-feedback">
+                    {{ form.itm_catid.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
+
         <!-- Dostawca -->
         <div class="mb-3">
             <label for="itm_supid" class="form-label">Dostawca:</label>
-            <select id="itm_supid" name="itm_supid" class="form-select">
+            <select id="itm_supid" name="itm_supid" class="form-select {% if form.itm_supid.errors %}is-invalid{% endif %}">
                 <option value="" selected>-- Wybierz dostawcę --</option>
                 {% for supplier in suppliers %}
                 <option value="{{ supplier.sup_id }}" {% if form.itm_supid.value == supplier.sup_id %}selected{% endif %}>
@@ -40,17 +59,28 @@
                 </option>
                 {% endfor %}
             </select>
+            {% if form.itm_supid.errors %}
+                <div class="invalid-feedback">
+                    {{ form.itm_supid.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
+
         <!-- Ilość minimalna -->
         <div class="mb-3">
             <label for="itm_minquantity" class="form-label">Ilość minimalna:</label>
-            <input type="number" id="itm_minquantity" name="itm_minquantity" class="form-control"
-                   placeholder="Wprowadź ilość minimalną" value="{{ form.itm_minquantity.value|default_if_none:'' }}">
+            <input type="number" id="itm_minquantity" name="itm_minquantity" class="form-control {% if form.itm_minquantity.errors %}is-invalid{% endif %}" placeholder="Wprowadź ilość minimalną" value="{{ form.itm_minquantity.value|default_if_none:'' }}">
+            {% if form.itm_minquantity.errors %}
+                <div class="invalid-feedback">
+                    {{ form.itm_minquantity.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
+
         <!-- Jednostka miary -->
         <div class="mb-3">
             <label for="itm_uniid" class="form-label">Jednostka miary:</label>
-            <select id="itm_uniid" name="itm_uniid" class="form-select">
+            <select id="itm_uniid" name="itm_uniid" class="form-select {% if form.itm_uniid.errors %}is-invalid{% endif %}">
                 <option value="" selected>-- Wybierz jednostkę --</option>
                 {% for units in units %}
                 <option value="{{ units.uni_id }}" {% if form.itm_uniid.value == units.uni_id %}selected{% endif %}>
@@ -58,20 +88,33 @@
                 </option>
                 {% endfor %}
             </select>
+            {% if form.itm_uniid.errors %}
+                <div class="invalid-feedback">
+                    {{ form.itm_uniid.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
+
         <!-- Cena -->
         <div class="mb-3">
             <label for="itm_price" class="form-label">Cena:</label>
-            <input type="number" id="itm_price" name="itm_price" class="form-control" step="0.01" value="{{ form.itm_price.value|default_if_none:'' }}">
+            <input type="number" id="itm_price" name="itm_price" class="form-control {% if form.itm_price.errors %}is-invalid{% endif %}" step="0.01" value="{{ form.itm_price.value|default_if_none:'' }}">
+            {% if form.itm_price.errors %}
+                <div class="invalid-feedback">
+                    {{ form.itm_price.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
 
         <!-- Checkbox Aktywny -->
         <div class="form-check mb-4">
-            <input class="form-check-input" type="checkbox" id="itm_isactive" name="itm_isactive"
-                   {% if form.itm_isactive.value %}checked{% endif %}>
-            <label class="form-check-label" for="itm_isactive">
-                Aktywny
-            </label>
+            <input class="form-check-input {% if form.itm_isactive.errors %}is-invalid{% endif %}" type="checkbox" id="itm_isactive" name="itm_isactive" {% if form.itm_isactive.value %}checked{% endif %}>
+            <label class="form-check-label" for="itm_isactive">Aktywny</label>
+            {% if form.itm_isactive.errors %}
+                <div class="invalid-feedback">
+                    {{ form.itm_isactive.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
 
         <!-- Przyciski akcji -->
@@ -84,7 +127,5 @@
             </button>
         </div>
     </form>
-
 </div>
-
 {% endblock %}

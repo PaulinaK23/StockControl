@@ -4,86 +4,91 @@
 
 {% block content %}
 <div class="container py-4">
-    <h1 class="page-title mb-4 text-center">Edytuj Produkt</h1>
+    <h1 class="page-title mb-4 text-center">🛒 Edytuj Produkt</h1>
     <form id="edit-product-form" method="post" class="bg-white shadow-sm p-4 rounded">
         {% csrf_token %}
 
         <!-- Nazwa produktu -->
         <div class="mb-3">
             <label for="itm_name" class="form-label">Nazwa produktu:</label>
-            {{ form.itm_name }}
-            {% for error in form.itm_name.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
+            <input type="text" id="itm_name" name="itm_name" class="form-control {% if form.itm_name.errors %}is-invalid{% endif %}" value="{{ form.itm_name.value|default_if_none:'' }}">
+            {% if form.itm_name.errors %}
+                <div class="invalid-feedback">
+                    {{ form.itm_name.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
 
         <!-- Kod EAN -->
         <div class="mb-3">
             <label for="itm_ean" class="form-label">Kod EAN:</label>
-            {{ form.itm_ean }}
-            {% for error in form.itm_ean.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
+            <input type="text" id="itm_ean" name="itm_ean" class="form-control {% if form.itm_ean.errors %}is-invalid{% endif %}" placeholder="Wprowadź kod EAN" value="{{ form.itm_ean.value|default_if_none:'' }}">
+            {% if form.itm_ean.errors %}
+                <div class="invalid-feedback">
+                    {{ form.itm_ean.errors|join:", " }}
+                </div>
+            {% endif %}
         </div>
 
         <!-- Kategoria -->
         <div class="mb-3">
             <label for="itm_catid" class="form-label">Kategoria:</label>
             {{ form.itm_catid }}
-            {% for error in form.itm_catid.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
+            {% if form.itm_catid.errors %}
+            <div class="invalid-feedback d-block">
+                {{ form.itm_catid.errors|join:", " }}
+            </div>
+            {% endif %}
         </div>
 
         <!-- Dostawca -->
         <div class="mb-3">
             <label for="itm_supid" class="form-label">Dostawca:</label>
             {{ form.itm_supid }}
-            {% for error in form.itm_supid.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
+            {% if form.itm_supid.errors %}
+            <div class="invalid-feedback d-block">
+                {{ form.itm_supid.errors|join:", " }}
+            </div>
+            {% endif %}
         </div>
 
         <!-- Ilość minimalna -->
         <div class="mb-3">
             <label for="itm_minquantity" class="form-label">Ilość minimalna:</label>
-            <input
-                type="number"
-                id="itm_minquantity"
-                name="itm_minquantity"
-                class="form-control"
-                value="{{ form.itm_minquantity.value|default:0 }}"
-                min="0"
-                step="1"
-            >
-            {% for error in form.itm_minquantity.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
+            {{ form.itm_minquantity }}
+            {% if form.itm_minquantity.errors %}
+            <div class="invalid-feedback d-block">
+                {{ form.itm_minquantity.errors|join:", " }}
+            </div>
+            {% endif %}
         </div>
+
         <!-- Jednostka miary -->
         <div class="mb-3">
             <label for="itm_uniid" class="form-label">Jednostka miary:</label>
             {{ form.itm_uniid }}
-            {% for error in form.itm_uniid.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
+            {% if form.itm_uniid.errors %}
+            <div class="invalid-feedback d-block">
+                {{ form.itm_uniid.errors|join:", " }}
+            </div>
+            {% endif %}
         </div>
 
         <!-- Cena -->
         <div class="mb-3">
             <label for="itm_price" class="form-label">Cena:</label>
             {{ form.itm_price }}
-            {% for error in form.itm_price.errors %}
-            <div class="text-danger">{{ error }}</div>
-            {% endfor %}
+            {% if form.itm_price.errors %}
+            <div class="invalid-feedback d-block">
+                {{ form.itm_price.errors|join:", " }}
+            </div>
+            {% endif %}
         </div>
 
         <!-- Checkbox Aktywny -->
         <div class="form-check mb-4">
             {{ form.itm_isactive }}
-            <label class="form-check-label" for="itm_isactive">
-                Aktywny
-            </label>
+            <label class="form-check-label" for="itm_isactive">Aktywny</label>
         </div>
 
         <!-- Przyciski akcji -->

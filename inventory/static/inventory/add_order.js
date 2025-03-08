@@ -1,53 +1,110 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const orderTable = document.querySelector("#order-items-table tbody");
     const addItemButton = document.getElementById("add-item-btn");
-    const tableBody = document.querySelector("#order-items-table tbody");
-    const totalFormsInput = document.querySelector("#id_order_items-TOTAL_FORMS");
+    const saveOrderButton = document.getElementById("save-order-btn"); // Musi być `id="save-order-btn"`
+    let totalForms = 0; // Licznik formularzy
 
-    // Funkcja do obsługi usuwania wiersza
-    function handleRemoveButtonClick(event) {
-        const removeButton = event.target.closest(".remove-item-btn");
-        if (removeButton) {
-            const row = removeButton.closest("tr");
-            const deleteInput = row.querySelector('input[type="hidden"][name$="-DELETE"]');
+    function addNewRow() {
+        let newRow = document.createElement("tr");
+        newRow.classList.add("order-item-form");
 
-            if (deleteInput) {
-                // Oznacz wiersz do usunięcia w backendzie
-                deleteInput.checked = true;
-            }
-            // Ukryj wiersz
-            row.style.display = "none";
-        }
+        newRow.innerHTML = `
+            <td>
+                <select class="form-control item-select">
+                    ${getItemOptions()}
+                </select>
+            </td>
+            <td><input type="number" class="form-control quantity-input" min="1" value="1"></td>
+            <td><input type="text" class="form-control price-input" value="0.00"></td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm remove-item-btn">
+                    <i class="bi bi-trash"></i> Usuń
+                </button>
+            </td>
+        `;
+
+        orderTable.appendChild(newRow);
+        attachRemoveEvent(newRow);
     }
 
-    // Obsługa dynamicznego dodawania wierszy
-    addItemButton.addEventListener("click", function () {
-        // Liczba istniejących formularzy
-        const currentFormsCount = parseInt(totalFormsInput.value, 10);
+    function attachRemoveEvent(row) {
+        let deleteButton = row.querySelector(".remove-item-btn");
 
-        // Klonowanie pustego formularza
-        const emptyForm = document.querySelector(".order-item-form").cloneNode(true);
+        deleteButton.addEventListener("click", function () {
+            row.remove();
+            totalForms--;
+        });
+    }
 
-        // Zmiana atrybutów name i id na nowe
-        const newFormHTML = emptyForm.innerHTML.replace(/-0-/g, `-${currentFormsCount}-`);
-        emptyForm.innerHTML = newFormHTML;
+    function getItemOptions() {
+        let options = "<option value=''>Wybierz pozycję...</option>";
 
-        // Wyczyszczenie wartości pól
-        const inputs = emptyForm.querySelectorAll("input, select");
-        inputs.forEach(input => {
-            input.value = "";
-            // Usuń zaznaczenie checkboxa DELETE w nowym formularzu
-            if (input.type === "checkbox") {
-                input.checked = false;
+        fetch("/api/items/")  // 🔥 Pobieramy Items zamiast Products
+            .then(response => response.json())
+            .then(data => {
+                data.items.forEach(item => {
+                    options += `<option value="${item.itm_id}">${item.itm_name}</option>`;
+                });
+                document.querySelectorAll(".item-select").forEach(select => {
+                    select.innerHTML = options;
+                });
+            })
+            .catch(error => console.error("Błąd ładowania pozycji:", error));
+
+        return options;
+    }
+
+
+    function getOrderData() {
+        let orderItems = [];
+        document.querySelectorAll(".order-item-form").forEach(row => {
+            let item = row.querySelector(".item-select").value;
+            let quantity = row.querySelector(".quantity-input").value;
+            let price = row.querySelector(".price-input").value;
+
+            if (item && quantity && price) {
+                orderItems.push({
+                    item: item,
+                    quantity: quantity,
+                    price: price
+                });
             }
         });
 
-        // Dodanie nowego wiersza do tabeli
-        tableBody.appendChild(emptyForm);
+        return {
+            order_number: document.querySelector("#id_ord_number").value,
+            order_date: document.querySelector("#id_ord_date").value,
+            order_status: document.querySelector("#id_ord_statusid").value,
+            warehouse: document.querySelector("#id_ord_whsid").value,
+            supplier: document.querySelector("#id_ord_supid").value,
+            items: orderItems
+        };
+    }
 
-        // Zwiększenie liczby formularzy
-        totalFormsInput.value = currentFormsCount + 1;
+    saveOrderButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Blokujemy domyślną akcję formularza
+        let orderData = getOrderData();
+
+        fetch("/orders/add/", {  // 🔥 Poprawiony URL
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+            },
+            body: JSON.stringify(orderData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = "/orders/"; // Przekierowanie po zapisaniu
+            }
+        })
+        .catch(error => {
+            console.error("Błąd:", error);
+        });
     });
 
-    // Obsługa dynamicznego usuwania wierszy
-    tableBody.addEventListener("click", handleRemoveButtonClick);
+    addItemButton.addEventListener("click", function () {
+        addNewRow();
+    });
 });

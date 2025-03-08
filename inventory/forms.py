@@ -3,6 +3,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from .models import Items, Categories, Suppliers, Stock, Orders, OrderItems, Attachments
+from django.core.exceptions import ValidationError
 
 
 class ItemForm(forms.ModelForm):
@@ -30,6 +31,8 @@ class ItemForm(forms.ModelForm):
             'itm_minquantity': forms.NumberInput(attrs={'class': 'form-control'}),
             'itm_uniid': forms.Select(attrs={'class': 'form-select'}),
         }
+
+
 
 
 class ProductFilterForm(forms.Form):
@@ -66,7 +69,7 @@ class StockForm(forms.ModelForm):
 class SupplierForm(forms.ModelForm):
     class Meta:
         model = Suppliers
-        fields = ['sup_name', 'sup_taxid', 'sup_email', 'sup_phone', 'sup_paymentterms', 'sup_address']
+        fields = ['sup_name', 'sup_taxid', 'sup_email', 'sup_phone', 'sup_paymentterms', 'sup_address', 'sup_isactive',]
         labels = {
             'sup_name': 'Nazwa dostawcy',
             'sup_taxid': 'NIP',
@@ -74,6 +77,7 @@ class SupplierForm(forms.ModelForm):
             'sup_phone': 'Telefon',
             'sup_paymentterms': 'Warunki płatności',
             'sup_address': 'Adres',
+            'sup_isactive': 'Aktywny',
         }
         widgets = {
             'sup_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -82,63 +86,47 @@ class SupplierForm(forms.ModelForm):
             'sup_phone': forms.TextInput(attrs={'class': 'form-control'}),
             'sup_paymentterms': forms.TextInput(attrs={'class': 'form-control'}),
             'sup_address': forms.Textarea(attrs={'class': 'form-control'}),
+            'sup_isactive': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Orders
-        fields = ['ord_date', 'ord_statusid', 'ord_whsid', 'ord_supid', 'ord_number']
+        fields = ['ord_number', 'ord_date', 'ord_statusid', 'ord_whsid', 'ord_supid']
         widgets = {
             'ord_date': forms.DateInput(
-                format='%Y-%m-%d',  # Format daty zgodny z bazą danych
-                attrs={
-                    'class': 'form-control',
-                    'type': 'date',  # HTML5 input typu 'date'
-                }
+                format='%Y-%m-%dT%H:%M',
+                attrs={'class': 'form-control', 'type': 'datetime-local'}
             ),
             'ord_statusid': forms.Select(attrs={'class': 'form-select'}),
             'ord_whsid': forms.Select(attrs={'class': 'form-select'}),
             'ord_supid': forms.Select(attrs={'class': 'form-select'}),
-            'ord_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'ord_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'readonly': 'readonly',  # Pole tylko do odczytu
+            }),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Jeśli instancja istnieje, ustaw datę w polu w odpowiednim formacie
-        if self.instance and self.instance.pk:
-            if self.instance.ord_date:
-                self.fields['ord_date'].initial = self.instance.ord_date.strftime('%Y-%m-%d')
+        if not self.instance.pk:
+            self.fields['ord_number'].initial = "Zostanie wygenerowany przy zapisie"
 
 
 class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItems
-        exclude = ['oit_id']
         fields = ['oit_itmid', 'oit_quantity', 'oit_price']
-        labels = {
-            'oit_itmid': 'Produkt',
-            'oit_quantity': 'Ilość',
-            'oit_price': 'Cena jednostkowa',
-        }
         widgets = {
             'oit_itmid': forms.Select(attrs={'class': 'form-select'}),
             'oit_quantity': forms.NumberInput(attrs={'class': 'form-control'}),
             'oit_price': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.instance and self.instance.pk:
-            # Dodaj ukryte pole DELETE
-            self.fields['DELETE'] = forms.BooleanField(
-                required=False,
-                widget=forms.HiddenInput()
-            )
-
 OrderItemFormSet = inlineformset_factory(
     Orders,
     OrderItems,
     form=OrderItemForm,
-    extra=0,
+    extra=1,
     can_delete=True
 )
